@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkforceHub Pro | Enterprise Workforce & Performance Suite</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f5f7ff',
+                            100: '#ebf0fe',
+                            500: '#4f46e5',
+                            600: '#4338ca',
+                            700: '#3730a3',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-['Inter'] antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                        <i class="fa-solid fa-users-gear text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 to-violet-700">WorkforceHub</span>
+                        <span class="ml-1 text-xs px-2 py-0.5 font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-full">v1.0 Pro</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex items-center space-x-1 bg-slate-100 p-1 rounded-xl">
+                    <button id="navTabDashboard" onclick="switchTab('dashboard')" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-indigo-600 bg-white shadow-sm">
+                        <i class="fa-solid fa-chart-pie mr-2"></i>Dashboard
+                    </button>
+                    <button id="navTabDirectory" onclick="switchTab('directory')" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900">
+                        <i class="fa-solid fa-address-book mr-2"></i>Directory
+                    </button>
+                    <button id="navTabAnalytics" onclick="switchTab('analytics')" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900">
+                        <i class="fa-solid fa-chart-line mr-2"></i>Analytics
+                    </button>
+                </nav>
+
+                <!-- Actions: Backend Status & Add Button -->
+                <div class="flex items-center space-x-3">
+                    <!-- Backend Connectivity Pill -->
+                    <button onclick="openApiConfigModal()" class="flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors duration-200 bg-slate-50 border-slate-200 hover:bg-slate-100 text-slate-700" title="Click to configure backend API URL">
+                        <span id="backendStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span id="backendStatusText">Connecting API...</span>
+                        <i class="fa-solid fa-sliders text-slate-400 text-[10px]"></i>
+                    </button>
+
+                    <!-- Add Employee Button -->
+                    <button onclick="openEmployeeModal()" class="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-100 transition-all duration-200 active:scale-95">
+                        <i class="fa-solid fa-user-plus mr-2 text-xs"></i>Add Employee
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- DASHBOARD VIEW -->
+        <section id="dashboardView" class="space-y-6">
+            <!-- Welcome Banner -->
+            <div class="relative overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 mb-3">
+                        <i class="fa-solid fa-shield-halved mr-1.5"></i> Enterprise Java Full Stack Suite
+                    </span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Workforce Performance & Operations Hub</h1>
+                    <p class="mt-2 text-slate-300 text-sm sm:text-base">
+                        Real-time workforce intelligence powered by Spring Boot 3 &amp; Java 21 REST API backend with responsive modern UI.
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-3">
+                        <button onclick="switchTab('directory')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg transition-colors shadow">
+                            Manage Staff Directory &rarr;
+                        </button>
+                        <a id="swaggerDocsLink" href="http://localhost:8080/swagger-ui/index.html" target="_blank" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold rounded-lg transition-colors border border-white/20 flex items-center">
+                            <i class="fa-solid fa-book-open mr-1.5 text-xs"></i>Swagger API Docs
+                        </a>
+                    </div>
+                </div>
+                <div class="absolute -right-8 -bottom-10 opacity-15 text-indigo-400 pointer-events-none">
+                    <i class="fa-solid fa-network-wired text-[220px]"></i>
+                </div>
+            </div>
+
+            <!-- KPI Metric Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <!-- Total Employees -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Workforce</p>
+                            <h3 id="statTotal" class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">--</h3>
+                            <p class="text-xs text-emerald-600 mt-1 font-medium"><i class="fa-solid fa-arrow-trend-up mr-1"></i>Active Organization</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Staff -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Active Now</p>
+                            <h3 id="statActive" class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">--</h3>
+                            <p class="text-xs text-slate-500 mt-1 font-medium"><span id="statActivePct">--</span>% active attendance</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Average Salary -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Average Salary</p>
+                            <h3 id="statAvgSalary" class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">--</h3>
+                            <p class="text-xs text-slate-500 mt-1 font-medium">Annual base pay</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Rating -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Avg Performance</p>
+                            <h3 id="statRating" class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">--</h3>
+                            <p class="text-xs text-amber-500 mt-1 font-medium"><i class="fa-solid fa-star mr-1"></i>Out of 5.0 scale</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Department Distribution Chart -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h4 class="font-bold text-slate-800">Headcount by Department</h4>
+                            <p class="text-xs text-slate-400">Distribution of talent across divisions</p>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg font-medium"><i class="fa-solid fa-chart-pie mr-1 text-slate-400"></i>Breakdown</span>
+                    </div>
+                    <div class="h-64 flex items-center justify-center">
+                        <canvas id="deptChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Salary by Department Chart -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h4 class="font-bold text-slate-800">Workforce Status Breakdown</h4>
+                            <p class="text-xs text-slate-400">Active, Remote, and Leave allocation</p>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg font-medium"><i class="fa-solid fa-chart-column mr-1 text-slate-400"></i>Status</span>
+                    </div>
+                    <div class="h-64 flex items-center justify-center">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIRECTORY VIEW -->
+        <section id="directoryView" class="hidden space-y-4">
+            <!-- Filter, Search & Action Bar -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <!-- Search Input -->
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search by name, role, email, or department..." class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+                </div>
+
+                <!-- Dropdown Filters -->
+                <div class="flex items-center space-x-3">
+                    <!-- Department Filter -->
+                    <select id="departmentFilter" onchange="handleFilterChange()" class="px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700">
+                        <option value="ALL">All Departments</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Design">Design</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Human Resources">Human Resources</option>
+                        <option value="Sales">Sales</option>
+                    </select>
+
+                    <!-- Status Filter -->
+                    <select id="statusFilter" onchange="handleFilterChange()" class="px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700">
+                        <option value="ALL">All Statuses</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="REMOTE">Remote</option>
+                        <option value="ON_LEAVE">On Leave</option>
+                    </select>
+
+                    <!-- View Toggle (Grid / Table) -->
+                    <div class="hidden sm:flex items-center bg-slate-100 p-1 rounded-xl">
+                        <button onclick="setViewMode('table')" id="viewModeTable" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-indigo-600 shadow-sm">
+                            <i class="fa-solid fa-table-list"></i>
+                        </button>
+                        <button onclick="setViewMode('grid')" id="viewModeGrid" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:text-slate-800">
+                            <i class="fa-solid fa-grip"></i>
+                        </button>
+                    </div>
+
+                    <!-- Export Button -->
+                    <button onclick="exportDataCSV()" class="px-3 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors" title="Export to CSV">
+                        <i class="fa-solid fa-file-csv mr-1.5"></i>Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Employee Table View Container -->
+            <div id="tableContainer" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50/75 border-b border-slate-200 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                <th class="py-3.5 px-4">Employee</th>
+                                <th class="py-3.5 px-4">Department & Role</th>
+                                <th class="py-3.5 px-4">Status</th>
+                                <th class="py-3.5 px-4">Salary</th>
+                                <th class="py-3.5 px-4">Rating</th>
+                                <th class="py-3.5 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeTableBody" class="divide-y divide-slate-100 text-sm">
+                            <!-- Injected dynamically via app.js -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden py-16 text-center">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-2xl mb-3">
+                        <i class="fa-solid fa-user-slash"></i>
+                    </div>
+                    <h5 class="text-base font-semibold text-slate-700">No employees found</h5>
+                    <p class="text-sm text-slate-400 mt-1 max-w-sm mx-auto">Try adjusting your search terms or filters to find what you're looking for.</p>
+                </div>
+            </div>
+
+            <!-- Grid View Container -->
+            <div id="gridContainer" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Injected dynamically via app.js -->
+            </div>
+        </section>
+
+        <!-- ANALYTICS VIEW -->
+        <section id="analyticsView" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-1">Workforce Intelligence & Salary Bands</h3>
+                <p class="text-sm text-slate-500 mb-6">Comprehensive compensation analysis across enterprise business units.</p>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                <th class="py-3 px-4">Department</th>
+                                <th class="py-3 px-4">Staff Count</th>
+                                <th class="py-3 px-4">Avg Base Compensation</th>
+                                <th class="py-3 px-4">Performance Index</th>
+                                <th class="py-3 px-4">Budget Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody id="analyticsTableBody" class="divide-y divide-slate-100 text-sm">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div>
+                <strong>WorkforceHub</strong> &bull; Java Full Stack (Spring Boot 3 + Java 21) &bull; Production Portfolio Project
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="http://localhost:8080/swagger-ui/index.html" target="_blank" class="hover:text-indigo-600 transition-colors">Swagger API</a>
+                <span>&bull;</span>
+                <a href="http://localhost:8080/h2-console" target="_blank" class="hover:text-indigo-600 transition-colors">H2 Console</a>
+                <span>&bull;</span>
+                <button onclick="openApiConfigModal()" class="hover:text-indigo-600 transition-colors">API Settings</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ADD / EDIT EMPLOYEE MODAL -->
+    <div id="employeeModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 relative border border-slate-100 my-8">
+            <button onclick="closeEmployeeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 id="modalTitle" class="text-xl font-bold text-slate-800 mb-1">Add New Employee</h3>
+            <p class="text-xs text-slate-500 mb-5">Fill in the employee record details to persist via the REST API.</p>
+
+            <form id="employeeForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                <input type="hidden" id="employeeId">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">First Name *</label>
+                        <input type="text" id="formFirstName" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="e.g. Alex">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Last Name *</label>
+                        <input type="text" id="formLastName" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="e.g. Morgan">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Corporate Email *</label>
+                    <input type="email" id="formEmail" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="alex.morgan@workforce.io">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Department *</label>
+                        <select id="formDepartment" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <option value="Engineering">Engineering</option>
+                            <option value="Design">Design</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Human Resources">Human Resources</option>
+                            <option value="Sales">Sales</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Job Position *</label>
+                        <input type="text" id="formPosition" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="e.g. Lead Backend Engineer">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Salary ($/yr) *</label>
+                        <input type="number" id="formSalary" min="10000" step="1000" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="95000">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Status *</label>
+                        <select id="formStatus" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <option value="ACTIVE">ACTIVE</option>
+                            <option value="REMOTE">REMOTE</option>
+                            <option value="ON_LEAVE">ON_LEAVE</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Rating (1-5)</label>
+                        <input type="number" id="formRating" min="1" max="5" step="0.1" value="4.5" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Avatar Image URL (Optional)</label>
+                    <input type="url" id="formAvatar" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="https://images.unsplash.com/photo-...">
+                </div>
+
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeEmployeeModal()" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors">Cancel</button>
+                    <button type="submit" id="saveButton" class="px-5 py-2 text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-100 transition-all">Save Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- API CONFIGURATION MODAL (For evaluators / live switching) -->
+    <div id="apiConfigModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative border border-slate-100">
+            <button onclick="closeApiConfigModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex items-center space-x-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800">API Connection Settings</h3>
+                    <p class="text-xs text-slate-500">Configure your Spring Boot backend target</p>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-sm">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Backend Base API URL</label>
+                    <input type="text" id="apiEndpointInput" class="w-full px-3 py-2 text-sm font-mono border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" value="http://localhost:8080/api/employees">
+                    <p class="text-[11px] text-slate-400 mt-1">Default: <code>http://localhost:8080/api/employees</code> or your cloud deployment URL.</p>
+                </div>
+
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+                    <div>
+                        <span class="font-semibold text-slate-700 block text-xs">Offline / Fallback Demo Mode</span>
+                        <span class="text-[11px] text-slate-400">Guarantees live UI display even if backend sleeps</span>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="demoModeToggle" onchange="toggleDemoMode(this.checked)" class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                    </label>
+                </div>
+
+                <div class="flex items-center justify-end space-x-2 pt-2">
+                    <button onclick="testApiConnection()" class="px-3 py-2 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors">
+                        <i class="fa-solid fa-bolt mr-1"></i>Test Connection
+                    </button>
+                    <button onclick="saveApiConfig()" class="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow transition-colors">
+                        Save &amp; Reconnect
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2"></div>
+
+    <!-- App JavaScript Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
